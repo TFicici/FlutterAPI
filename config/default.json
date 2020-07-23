@@ -9,7 +9,7 @@
 	  "database":{
 		"mongoIP":"ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com",
 		"mongoPort":27017,
-		"mongoDB":"files",
+		"mongoDB":"bbe9ylivkoqel0g",
 		"mongoBucket":"uploads",
 		"mongoUrlCollection":"url"
 	  }
