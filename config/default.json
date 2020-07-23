@@ -1,16 +1,16 @@
 {
-	"app": {
-		"ip": "localhost",
-		"port": 3000,
-		"tls": 0,
-		"privateKeyPath": "/ssl/server.key",
-		"certificatePath": "/ssl/server.crt"
-	},
-	"database": {
-		"mongoIP": "localhost",
-		"mongoPort": 27017,
-		"mongoDB": "files",
-		"mongoBucket": "uploads",
-		"mongoUrlCollection": "url"
-	}
+	"app":{
+		"ip":"http://app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io/",
+		"port":3000,
+		"tls":0,
+		"privateKeyPath":"/ssl/server.key",
+		"certificatePath":"/ssl/server.crt"
+	  },
+	  "database":{
+		"mongoIP":"ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com",
+		"mongoPort":27017,
+		"mongoDB":"files",
+		"mongoBucket":"uploads",
+		"mongoUrlCollection":"url"
+	  }
 }
