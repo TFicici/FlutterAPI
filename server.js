@@ -133,6 +133,7 @@ app.post('/upload/:id', function (req, res, next) {
 
 app.get('/download/:id', function (req, res, next) {
   var filename=req.params.id;
+  res.set('Content-Disposition', 'attachment; filename=\"test.jpg\"');
   bucket.openDownloadStreamByName(filename).
   on('error', function(error) {
     if(error.code=="ENOENT"){
