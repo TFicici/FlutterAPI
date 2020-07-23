@@ -84,7 +84,7 @@ if(options.app.tls==1){
 }
 //Sunucuda çalışması için mongouri sunucu mongourisi ile değiştirilmiştir.
 //var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort;
-var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.port;
+var mongouri="mongodb://ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com:27017/bbe9ylivkoqel0g";
 mongodb.connect(mongouri, { useUnifiedTopology: true },function(error, client) {
   
   db = client.db(options.database.mongoDB);
