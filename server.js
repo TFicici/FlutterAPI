@@ -173,8 +173,8 @@ app.get('/',function(req,res,next){
 const port = process.env.PORT||27017;
 
 if(options.app.tls==1){
-  httpsServer.listen(port,options.app.ip);
+  httpsServer.listen(port);
 }
 else{
-  app.listen(port,options.app.ip);
+  app.listen(port);
 }
