@@ -44,7 +44,7 @@ try {
         "database":{
           "mongoIP":"ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com",
           "mongoPort":27017,
-          "mongoDB":"files",
+          "mongoDB":"bbe9ylivkoqel0g",
           "mongoBucket":"uploads",
           "mongoUrlCollection":"url"
         }
@@ -84,7 +84,7 @@ if(options.app.tls==1){
 }
 //Sunucuda çalışması için mongouri sunucu mongourisi ile değiştirilmiştir.
 //var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort;
-var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.port+"/bbe9ylivkoqel0g";
+var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.port;
 mongodb.connect(mongouri, { useUnifiedTopology: true },function(error, client) {
   
   db = client.db(options.database.mongoDB);
