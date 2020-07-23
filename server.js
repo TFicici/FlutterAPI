@@ -77,11 +77,19 @@ if(options.app.tls==1){
 
 var bucket;
 var db;
+
+/*Sunucu için port kaldırılmıştır.
 if(options.app.tls==1){
   var serverURL="https://"+options.app.ip+":"+options.app.port+"/";
 }else{
   var serverURL="http://"+options.app.ip+":"+options.app.port+"/";
+}*/
+if(options.app.tls==1){
+  var serverURL="https://"+options.app.ip+"/";
+}else{
+  var serverURL="http://"+options.app.ip+"/";
 }
+
 //Sunucuda çalışması için mongouri sunucu mongourisi ile değiştirilmiştir.
 //var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort;
 var mongouri="mongodb://ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com:27017/bbe9ylivkoqel0g";
