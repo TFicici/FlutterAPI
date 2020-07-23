@@ -35,14 +35,14 @@ try {
       console.log('The file does not exist.');
       var options={
         "app":{
-          "ip":"localhost",
+          "ip":"http://app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io/",
           "port":3000,
           "tls":0,
           "privateKeyPath":"/ssl/server.key",
           "certificatePath":"/ssl/server.crt"
         },
         "database":{
-          "mongoIP":"localhost",
+          "mongoIP":"ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com",
           "mongoPort":27017,
           "mongoDB":"files",
           "mongoBucket":"uploads",
@@ -82,8 +82,9 @@ if(options.app.tls==1){
 }else{
   var serverURL="http://"+options.app.ip+":"+options.app.port+"/";
 }
-
-var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort;
+//Sunucuda çalışması için mongouri sunucu mongourisi ile değiştirilmiştir.
+//var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort;
+var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.port+"/bbe9ylivkoqel0g";
 mongodb.connect(mongouri, { useUnifiedTopology: true },function(error, client) {
   
   db = client.db(options.database.mongoDB);
@@ -169,9 +170,11 @@ app.get('/',function(req,res,next){
   res.send(options.app.ip);
 })
 
+const port = process.env.PORT||27017;
+
 if(options.app.tls==1){
-  httpsServer.listen(3000,options.app.ip);
+  httpsServer.listen(port,options.app.ip);
 }
 else{
-  app.listen(3000,options.app.ip);
+  app.listen(port,options.app.ip);
 }
