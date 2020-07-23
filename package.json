@@ -1,0 +1,23 @@
+{
+  "name": "uploaddownloadapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.3.1",
+    "express.js": "^1.0.0",
+    "fs": "0.0.1-security",
+    "guid": "0.0.12",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "mongodb": "^3.5.9",
+    "morgan": "^1.10.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {}
+}
