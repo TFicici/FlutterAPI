@@ -154,11 +154,15 @@ try {
 
   app.get("/generateURLControl/:url",(req,res)=>{
     var alinanURL=String(req.params.url);
-    db.collection(options.database.mongoUrlCollection).findOne({url:alinanURL} ,(error, result) => {
+    db.collection(options.database.mongoUrlCollection).findOne({key:alinanURL} ,(error, result) => {
       if(error) {
         res.status(403).send("URL not found.");
       }else{
-        res.status(200).send({result:"OK"});
+        if(result!=null){
+          res.status(200).send({result:"OK"})
+      }else{
+          res.status(403).send("Anahtar oluşturulmamış ya da doğru değil.");
+        }//if
       }
     });
   });
