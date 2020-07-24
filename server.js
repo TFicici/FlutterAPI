@@ -151,6 +151,19 @@ try {
     });
   });
 
+
+  app.get("/generateURLControl/:url",(req,res)=>{
+    var alinanURL=String(req.params.url);
+    db.collection(options.database.mongoUrlCollection).findOne({url:alinanURL} ,(error, result) => {
+      if(error) {
+        res.status(403).send("URL not found.");
+      }else{
+        res.status(200).send({result:"OK"});
+      }
+    });
+  });
+
+
   const port = process.env.PORT||27017;
 
   if(options.app.tls==1){
