@@ -33,16 +33,16 @@ try {
         console.log('The file does not exist.');
         var options={
           "app":{
-            "ip":"localhost",
+            "ip":"app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io/",
             "port":3000,
             "tls":0,
             "privateKeyPath":"/ssl/server.key",
             "certificatePath":"/ssl/server.crt"
           },
           "database":{
-            "mongoIP":"localhost",
+            "mongoIP":"ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com",
             "mongoPort":27017,
-            "mongoDB":"files",
+            "mongoDB":"bbe9ylivkoqel0g",
             "mongoBucket":"uploads",
             "mongoUrlCollection":"url"
           }
@@ -81,7 +81,7 @@ try {
     var serverURL="http://"+options.app.ip+":"+options.app.port+"/";
   }
   
-  var mongouri="mongodb://"+options.database.mongoIP+":"+options.database.mongoPort+"/"+options.database.mongoDB;
+  var mongouri="mongodb://ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com:27017/bbe9ylivkoqel0g";
   mongodb.connect(mongouri, { useUnifiedTopology: true },function(error, client) {
     
     db = client.db(options.database.mongoDB);
@@ -135,4 +135,26 @@ try {
       });
   });
 
-  app.listen(3000,options.app.ip);
+  app.get("/generateURL",(req,res)=>{
+    var guid =guID.create();
+    guid=""+guid;
+    genurl =serverURL+"upload/"+guid;
+  
+    var myobj = { createTime:new Date(),key:guid,url:genurl};
+    db.collection(options.database.mongoUrlCollection).insertOne(myobj, function(err, ress) {
+      if (err){
+        res.status(500).send({result:"ERROR",error_reason:err.message});
+      }
+      console.log("1 document inserted");
+      res.status(200).send({result:"OK",url:genurl,expires:180});
+    });
+  });
+
+  const port = process.env.PORT||27017;
+
+  if(options.app.tls==1){
+    httpsServer.listen(port);
+  }
+  else{
+    app.listen(port);
+  }
