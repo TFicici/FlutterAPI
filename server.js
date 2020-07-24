@@ -129,7 +129,8 @@ try {
           });
         }
     
-    console.log(files[0].metadata);    
+    console.log(files[0].metadata);
+    res.set('Content-Disposition', 'attachment; filename=\"'+files[0].filename+'\"');    
     bucket.openDownloadStreamByName(files[0].filename).pipe(res);
         
       });
