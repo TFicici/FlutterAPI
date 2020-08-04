@@ -104,17 +104,34 @@ try {
         });
     }
   });
+
    
   const upload = multer({
     storage
   });
-
+  var varUpload = upload.single('file');
   
-  app.post("/upload/:id", upload.single("file"), (req, res) => {
-    // res.json({file : req.file})
-    res.send(req.params.id);
-   
+  app.post("/upload/:id", (req, res) => {
+
+    var filename=req.params.id;
+    db.collection(options.database.mongoUrlCollection).findOne({key:filename} ,(errr, result) => {
+        if(errr) {
+             res.status(500).send(errr.message);
+        }else{
+          if(result!=null){
+            varUpload(req, res, function (err) {
+                if (err) {
+                     res.status(500).send({result:"ERROR",error_reason:err.message});
+                 }
+                 res.status(200).send({result:"OK"});
+               })
+            }else{
+              res.status(403).send("Anahtar oluşturulmamış ya da doğru değil.");
+            }//ifnull
+          }//else
+        });
   });
+
 
 
   app.get("/download/:id", (req, res) => {
