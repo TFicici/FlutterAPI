@@ -34,7 +34,7 @@ try {
         var options={
           "app":{
             "ip":"app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io/",
-            "port":3000,
+            "port":0,
             "tls":0,
             "privateKeyPath":"/ssl/server.key",
             "certificatePath":"/ssl/server.crt"
@@ -76,9 +76,17 @@ try {
   var bucket;
   var db;
   if(options.app.tls==1){
-    var serverURL="https://"+options.app.ip+":"+options.app.port+"/";
+    if(options.app.port!=0){
+      var serverURL="https://"+options.app.ip+":"+options.app.port+"/";}
+    else{
+      var serverURL="https://"+options.app.ip+"/";}//port bilgisi verilmediğinde
+
   }else{
-    var serverURL="http://"+options.app.ip+":"+options.app.port+"/";
+    if(options.app.port!=0){
+      var serverURL="http://"+options.app.ip+":"+options.app.port+"/";}
+    else{
+      var serverURL="http://"+options.app.ip+"/";}//port bilgisi verilmediğinde
+    
   }
   
   var mongouri="mongodb://ueeofqioyppgar2vj9j5:hrGIJIl96JYhxbSl5QKe@bbe9ylivkoqel0g-mongodb.services.clever-cloud.com:27017/bbe9ylivkoqel0g";
