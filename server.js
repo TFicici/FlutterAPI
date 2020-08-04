@@ -33,7 +33,7 @@ try {
         console.log('The file does not exist.');
         var options={
           "app":{
-            "ip":"app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io/",
+            "ip":"app-73f3769f-022c-46d3-8fca-2a676e98e048.cleverapps.io",
             "port":0,
             "tls":0,
             "privateKeyPath":"/ssl/server.key",
