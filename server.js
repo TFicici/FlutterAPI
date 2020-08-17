@@ -27,6 +27,9 @@ try {
             "mongoDB":config.get('database.mongoDB'),
             "mongoBucket":config.get('database.mongoBucket'),
             "mongoUrlCollection":config.get('database.mongoUrlCollection')
+          },
+          "viewOptions":{
+            "perPageData":config.get("viewOptions.perPageData")
           }
         };
     } else {
@@ -45,6 +48,9 @@ try {
             "mongoDB":"bbe9ylivkoqel0g",
             "mongoBucket":"uploads",
             "mongoUrlCollection":"url"
+          },
+          "viewOptions":{
+            "perPageData":2
           }
       };
       
@@ -120,25 +126,32 @@ try {
   var varUpload = upload.single('file');
   
   app.post("/upload/:id", (req, res) => {
-
     var filename=req.params.id;
     db.collection(options.database.mongoUrlCollection).findOne({key:filename} ,(errr, result) => {
         if(errr) {
-             res.status(500).send(errr.message);
+          res.status(500).send({result:"ERROR",error_reason:errr.message});
         }else{
           if(result!=null){
             varUpload(req, res, function (err) {
                 if (err) {
                      res.status(500).send({result:"ERROR",error_reason:err.message});
                  }
+                 db.collection(options.database.mongoUrlCollection).deleteOne({key:filename},function(err,ress){
+                  if(err){
+                    res.status(500).send({result:"ERROR",error_reason:err.message});
+                  }
+                });
+                console.log('done!');
+        
                  res.status(200).send({result:"OK"});
                })
             }else{
-              res.status(403).send("Anahtar oluşturulmamış ya da doğru değil.");
-            }//ifnull
-          }//else
+              res.status(403).send({result:"ERROR",error_reason:"Anahtar oluşturulmamış ya da doğru değil."});
+            }
+          }
         });
   });
+
 
 
 
@@ -149,46 +162,133 @@ try {
       })
       .toArray((err, files) => {
         if (!files || files.length === 0) {
-          return res.status(404).json({
-            err: "no files exist"
-          });
+            res.status(404).send({result:"ERROR",error_reason:"Dosya bulunamadı."});
         }
-    
-    console.log(files[0].metadata);
-    res.set('Content-Disposition', 'attachment; filename=\"'+files[0].filename+'\"');    
-    bucket.openDownloadStreamByName(files[0].filename).pipe(res);
-        
+    res.set('Content-Disposition', 'attachment; filename=\"'+files[0].filename+'\"');      
+    bucket.openDownloadStreamByName(files[0].filename). 
+    on('error', function(error) {
+        if(error.code=="ENOENT"){
+          res.status(404).send({result:"ERROR",error_reason:"Dosya bulunamadı."});
+        }
+        res.status(500).send({result:"ERROR",error_reason:error.message});
+      }).
+    on('finish', function() {
+        console.log('done!');
+        res.status(200).send({result:"OK"});
+      }).pipe(res); 
       });
   });
+
 
   app.get("/generateURL",(req,res)=>{
     var guid =guID.create();
     guid=""+guid;
     genurl =serverURL+"upload/"+guid;
-  
-    var myobj = { createTime:new Date(),key:guid,url:genurl};
+    var myobj = { createTime:new Date(), key:guid, url:genurl};
     db.collection(options.database.mongoUrlCollection).insertOne(myobj, function(err, ress) {
       if (err){
-        res.status(500).send({result:"ERROR",error_reason:err.message});
-      }
+        res.status(500).send({result:"ERROR",error_reason:err.message}); }
       console.log("1 document inserted");
-      res.status(200).send({result:"OK",url:genurl,expires:180});
+      res.status(200).send({result:"OK",url:genurl,expires:options.insertOptions.expireTime});
     });
   });
 
 
-  app.get("/generateURLControl/:url",(req,res)=>{
-    var alinanURL=String(req.params.url);
-    db.collection(options.database.mongoUrlCollection).findOne({key:alinanURL} ,(error, result) => {
-      if(error) {
-        res.status(403).send("URL not found.");
-      }else{
-        if(result!=null){
-          res.status(200).send({result:"OK"})
-      }else{
-          res.status(403).send("Anahtar oluşturulmamış ya da doğru değil.");
-        }//if
+  app.get("/",(req,res)=>{
+    res.render("list.ejs",{
+      server:serverURL
+    });
+  })
+
+  var sortLength=1;
+  var sortDate=-1;
+  var sortFilename=1;
+
+  app.get("/:page",(req,res,next)=> {
+    var perPage=options.viewOptions.perPageData;
+    var page=req.params.page||1;
+    var query=req.query;
+    var queryString="";
+    var queryForDB={};
+    var sortForDB={};
+   
+      if(query.search!=null){
+        var s={"filename":new RegExp(query.search)};
+        queryForDB=Object.assign({}, queryForDB, s);
+        queryString=queryString+"search="+query.search+"&";
       }
+      if(query.start!=null){
+        var d={"uploadDate":{
+          $gte: new Date(query.start),
+          $lt: new Date(query.end)
+        }};
+        console.log(d);
+        queryForDB=Object.assign({}, queryForDB, d);
+        queryString=queryString+"start="+query.start+"&end="+query.end+"&";
+      }
+
+      if(query.len!=null){
+        sortLength=parseInt(query.len);
+        if(sortLength==2)
+          sortLength=-1;
+        var s={"length":sortLength};
+        sortForDB=Object.assign({},sortForDB,s);
+        console.log(sortLength)
+        queryString=queryString+"len="+query.len+"&";
+      }
+      if(query.filename!=null){
+        sortFilename=parseInt(query.filename);
+        if(sortFilename==2)
+          sortFilename=-1;
+        var s={"length":sortFilename};
+        sortForDB=Object.assign({},sortForDB,s);
+        console.log(sortFilename)
+        queryString=queryString+"filename="+query.filename+"&";
+      }
+      if(query.date!=null){
+        sortDate=parseInt(query.date);
+        if(sortDate==2)
+          sortDate=-1;
+        var d={"uploadDate":sortDate};
+        sortForDB=Object.assign({},sortForDB,d);
+        queryString=queryString+"date="+query.date+"&";
+      }
+      if(queryString.length>1){
+        queryString="?"+queryString;
+        queryString=queryString.substr(0,queryString.length-1)
+        console.log(queryString);
+     }
+      db.collection("uploads.files").find(queryForDB).count( {}, function(err, result){
+        if(err){
+            res.status(500).send({result:"ERROR",error_reason:err.message})
+        }
+        else{    
+          bucket
+          .find(queryForDB)
+          .sort(sortForDB)
+          .skip((perPage*page)-perPage)
+          .limit(perPage)
+          .toArray(function(err,file){
+                if(err) return next(err)
+                res.render("index.ejs",{
+                  rowIndex:(perPage*(page-1))+1,
+                  query:queryString,
+                  files:file,
+                  current:page,
+                  pages:Math.ceil(result/perPage),
+                  config:serverURL
+                });
+            })
+        }
+      })
+
+  });
+
+
+  app.post("/deleteFile/:_id", (req, res) => {
+    bucket.delete(ObjectId(req.params._id), (err, data) => {
+      if (err) return res.status(500).send({ result:"ERROR",error_reason: err.message });
+      res.redirect("/");
     });
   });
 
