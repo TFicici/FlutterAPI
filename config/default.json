@@ -12,5 +12,8 @@
 		"mongoDB":"bbe9ylivkoqel0g",
 		"mongoBucket":"uploads",
 		"mongoUrlCollection":"url"
-	  }
+	  },
+      "viewOptions":{
+        "perPageData":2
+      }
 }
