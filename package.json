@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "config": "^3.3.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fs": "0.0.1-security",
     "guid": "0.0.12",
     "https": "^1.0.0",
